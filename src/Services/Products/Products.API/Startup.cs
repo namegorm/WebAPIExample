@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -23,6 +24,14 @@ namespace Products.API
         {
             services.AddInfrastructure();
             services.AddApplication();
+
+            services.AddApiVersioning(configuration =>
+            {
+                configuration.DefaultApiVersion = new ApiVersion(1, 0);
+                configuration.AssumeDefaultVersionWhenUnspecified = true;
+                configuration.UseApiBehavior = false;
+            });
+
             services.AddControllers();
         }
 

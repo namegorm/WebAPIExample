@@ -14,8 +14,9 @@ namespace Products.Infrastructure
         public static IServiceCollection AddInfrastructure(this IServiceCollection services)
         {
             services.AddScoped<IDatabaseContext, DatabaseContext>();
-            services.AddScoped<IDatabaseContext>(x => x.GetService<IDatabaseContext>());
+            services.AddScoped<IDatabaseContext>(x => x.GetService<DatabaseContext>());
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddDbContext<DatabaseContext>();
             services.AddTransient<IProductsRepository, ProductsRepository>();
 
             return services;

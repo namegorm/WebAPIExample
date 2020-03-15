@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Core.API.Controllers.API
 {
     [ApiController]
+    [Route("api/v{:apiVersion}/[controller]")]
     public abstract class CoreAPIController<TDomainEntity, TApplicationDTO, TViewModel, TApplicationService> : ControllerBase
         where TDomainEntity : ICoreDomainEntity
         where TApplicationDTO : ICoreApplicationDTO<TDomainEntity>

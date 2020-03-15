@@ -11,6 +11,7 @@ namespace Products.Infrastructure.Repositories.Implementations
         public ProductsRepository(IDatabaseContext databaseContext)
             : base(databaseContext)
         {
+            var sdf = 123;
         }
     }
 }
