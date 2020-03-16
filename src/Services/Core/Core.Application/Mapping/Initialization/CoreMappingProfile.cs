@@ -19,20 +19,26 @@ namespace Core.Application.Mapping.Initialization
         {
             var exportedTypes = assembly.GetExportedTypes();
 
-            var mapFromTypes = exportedTypes.Where(x => x.GetInterface(nameof(ICoreMapFrom<object>)) != null);
-            var mapToTypes = exportedTypes.Where(x => x.GetInterface(nameof(ICoreMapTo<object>)) != null);
+            var mapFromTypes = exportedTypes.Where(x => x.GetInterface(typeof(ICoreMapFrom<>).Name) != null);
+            var mapToTypes = exportedTypes.Where(x => x.GetInterface(typeof(ICoreMapTo<>).Name) != null);
 
             foreach (var mapFromType in mapFromTypes)
             {
                 var instance = Activator.CreateInstance(mapFromType);
-                var mapFromMethod = mapFromType.GetMethod(nameof(ICoreMapFrom<object>.MapFrom));
+
+                var mapFromMethod = mapFromType.GetMethod(nameof(ICoreMapFrom<object>.MapFrom)) ??
+                    mapFromType.GetInterface(typeof(ICoreMapFrom<>).Name)?.GetMethod(nameof(ICoreMapFrom<object>.MapFrom));
+
                 mapFromMethod?.Invoke(instance, new[] { this });
             }
 
             foreach (var mapToType in mapToTypes)
             {
                 var instance = Activator.CreateInstance(mapToType);
-                var mapToMethod = mapToType.GetMethod(nameof(ICoreMapTo<object>.MapTo));
+
+                var mapToMethod = mapToType.GetMethod(nameof(ICoreMapTo<object>.MapTo)) ??
+                    mapToType.GetInterface(typeof(ICoreMapTo<>).Name)?.GetMethod(nameof(ICoreMapTo<object>.MapTo));
+
                 mapToMethod?.Invoke(instance, new[] { this });
             }
         }

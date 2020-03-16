@@ -1,8 +1,8 @@
-﻿using System.Threading.Tasks;
-
+﻿
 using Core.API.Controllers.API;
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 using Products.Application.ApplicationServices.Interfaces;
 using Products.Application.DTOs.Implementations;
@@ -14,15 +14,12 @@ namespace Products.API.Controllers.API
     [ApiVersion("1.0")]
     public class ProductsController : CoreAPIController<Product, ProductApplicationDTO, ProductViewModel, IProductsApplicationService>
     {
-        public ProductsController(IProductsApplicationService applicationService)
-            : base(applicationService)
-        {
-        }
+        private readonly ILogger<ProductsController> _logger;
 
-        [HttpGet]
-        public async override Task<IActionResult> GetAsync()
+        public ProductsController(ILogger<ProductsController> logger, IProductsApplicationService applicationService)
+            : base(logger, applicationService)
         {
-            return await base.GetAsync();
+            _logger = logger;
         }
     }
 }

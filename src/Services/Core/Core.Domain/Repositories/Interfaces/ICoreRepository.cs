@@ -11,7 +11,7 @@ namespace Core.Domain.Repositories.Interfaces
     {
         IQueryable<TDomainEntity> Get(Expression<Func<TDomainEntity, bool>> expression);
         TDomainEntity Create(TDomainEntity entity);
-        TDomainEntity Update(TDomainEntity entity);
+        TDomainEntity Update(long id, TDomainEntity entity);
         TDomainEntity Delete(long id);
     }
 }

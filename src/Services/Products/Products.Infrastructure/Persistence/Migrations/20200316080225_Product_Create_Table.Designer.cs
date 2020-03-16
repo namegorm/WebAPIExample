@@ -9,8 +9,8 @@ using Products.Infrastructure.Persistence.DatabaseContexts.Implementations;
 namespace Products.Infrastructure.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20200314120857_Init")]
-    partial class Init
+    [Migration("20200316080225_Product_Create_Table")]
+    partial class Product_Create_Table
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -26,6 +26,12 @@ namespace Products.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 

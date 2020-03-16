@@ -9,7 +9,7 @@ namespace Core.Application.ApplicationServices.Interfaces
     {
         Task<IEnumerable<TApplicationDTO>> GetAsync(Expression<Func<TDomainEntity, bool>> expression = default);
         Task<TApplicationDTO> CreateAsync(TViewModel viewModel);
-        Task<TApplicationDTO> UpdateAsync(TViewModel viewModel);
+        Task<TApplicationDTO> UpdateAsync(long id, TViewModel viewModel);
         Task<TApplicationDTO> DeleteAsync(long id);
     }
 }

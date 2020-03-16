@@ -1,5 +1,7 @@
 ﻿using Core.Infrastructure.Repositories.Implementations;
 
+using Microsoft.Extensions.Logging;
+
 using Products.Domain.Entities.Implementations;
 using Products.Domain.Repositories.Interfaces;
 using Products.Infrastructure.Persistence.DatabaseContexts.Interfaces;
@@ -8,10 +10,12 @@ namespace Products.Infrastructure.Repositories.Implementations
 {
     public class ProductsRepository : CoreRepository<Product>, IProductsRepository
     {
-        public ProductsRepository(IDatabaseContext databaseContext)
-            : base(databaseContext)
+        private readonly ILogger<ProductsRepository> _logger;
+
+        public ProductsRepository(ILogger<ProductsRepository> logger, IDatabaseContext databaseContext)
+            : base(logger, databaseContext)
         {
-            var sdf = 123;
+            _logger = logger;
         }
     }
 }

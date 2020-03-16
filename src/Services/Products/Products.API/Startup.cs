@@ -1,3 +1,12 @@
+using System.Linq;
+using System.Net;
+
+using Core.API.Middleware;
+using Core.Application.Models;
+
+using FluentValidation;
+using FluentValidation.AspNetCore;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -6,7 +15,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 using Products.Application;
+using Products.Application.ViewModels.Implementations;
+using Products.Application.ViewModelValidators.Implementations;
 using Products.Infrastructure;
+
+using Serilog;
 
 namespace Products.API
 {
@@ -32,7 +45,25 @@ namespace Products.API
                 configuration.UseApiBehavior = false;
             });
 
+            services.AddTransient<IValidator<ProductViewModel>, ProductViewModelValidator>();
             services.AddControllers();
+
+            services.AddLogging(builder =>
+            {
+                builder.AddSerilog();
+            });
+
+            services.AddMvc().AddFluentValidation().ConfigureApiBehaviorOptions(options =>
+            {
+                options.InvalidModelStateResponseFactory = x =>
+                {
+                    var errors = string.Join(' ', x.ModelState.Values.Where(y => y.Errors.Count > 0)
+                        .SelectMany(y => y.Errors)
+                        .Select(y => y.ErrorMessage));
+
+                    return new OkObjectResult(new CoreResultModel(HttpStatusCode.BadRequest, errors));
+                };
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -43,6 +74,8 @@ namespace Products.API
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseMiddleware<CoreErrorHandlingMiddleware>();
+
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthorization();
@@ -51,6 +84,10 @@ namespace Products.API
             {
                 endpoints.MapControllers();
             });
+
+            Log.Logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(Configuration)
+                .CreateLogger();
         }
     }
 }
